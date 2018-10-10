@@ -62,10 +62,10 @@ class Main extends React.Component<IMainProps, IMainState> {
 
   public handleChange(event: React.ChangeEvent<HTMLInputElement>, key: number) {
     const data = this.state.data;
-    const value = +event.target.value;
+    const value = parseInt(event.target.value, 10);
     if (isNaN(value)) { return; }
-    if (event.target.name === 'x') { data[key].x = value; }
-    if (event.target.name === 'y') { data[key].y = value; }
+    if (event.target.name === `x${key}`) { data[key].x = value; }
+    if (event.target.name === `y${key}`) { data[key].y = value; }
     this.setState({ data });
   }
 
