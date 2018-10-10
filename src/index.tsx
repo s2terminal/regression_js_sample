@@ -86,6 +86,18 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.setState({ yIntercept: mb.b });
   }
 
+  public addPoint() {
+    const data = this.state.data;
+    data.push({ x: 0, y: 0 });
+    this.setState({ data });
+  }
+
+  public removePoint() {
+    const data = this.state.data;
+    data.pop();
+    this.setState({ data });
+  }
+
   public render() {
     const points = this.state.data.map((xy, index) => {
       return (
@@ -102,6 +114,8 @@ class Main extends React.Component<IMainProps, IMainState> {
     return (
       <form action="javascript:void(0)">
         {points}
+        <DefaultButton text="増やす" onClick={e => this.addPoint()} />
+        <DefaultButton text="減らす" onClick={e => this.removePoint()} />
         <DefaultButton
           primary={true}
           text="計算"
