@@ -13,13 +13,9 @@ module.exports = {
     ]
   },
 
-  mode: 'development',
+  mode: 'production',
   devtool: "source-map",
   resolve: {
-    extensions: [".ts", ".tsx"]
-  },
-  externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
+    extensions: [".ts", ".tsx", ".js"]
   }
 };
