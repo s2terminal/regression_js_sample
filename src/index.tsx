@@ -1,6 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as SimpleStatistics from "simple-statistics";
+import { DefaultButton } from "office-ui-fabric-react/lib/Button";
+import { initializeIcons } from "@uifabric/icons";
+import { TextField } from "office-ui-fabric-react/lib/TextField";
+import "./index.scss";
+// Office UI fabricのアイコン初期化
+initializeIcons();
 
 interface IPointProps {
   index: number;
@@ -13,25 +19,27 @@ interface IPointProps {
 class Point extends React.Component<IPointProps, any> {
   public render() {
     return (
-      <div>
-        <label htmlFor={`x${this.props.index}`}>X{this.props.index}</label>
-        <input
-          type="text"
-          name={`x${this.props.index}`}
-          value={this.props.x}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
-            this.props.onChangeX(event)
-          }
-        />
-        <label htmlFor={`y${this.props.index}`}>Y{this.props.index}</label>
-        <input
-          type="text"
-          name={`y${this.props.index}`}
-          value={this.props.y}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
-            this.props.onChangeY(event)
-          }
-        />
+      <div className="point">
+        <label htmlFor={`x${this.props.index}`}>
+          <TextField
+            prefix={`x${this.props.index}:`}
+            name={`x${this.props.index}`}
+            value={`${this.props.x}`}
+            onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void =>
+              this.props.onChangeX(event)
+            }
+          />
+        </label>
+        <label htmlFor={`y${this.props.index}`}>
+          <TextField
+            prefix={`y${this.props.index}:`}
+            name={`y${this.props.index}`}
+            value={`${this.props.y}`}
+            onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void =>
+              this.props.onChangeY(event)
+            }
+          />
+        </label>
       </div>
     );
   }
@@ -69,13 +77,25 @@ class Main extends React.Component<IMainProps, IMainState> {
     this.setState({ data });
   }
 
-  public handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  public handleSubmit() {
     const data = this.state.data.map(xy => {
       return [xy.x, xy.y];
     });
     const mb = SimpleStatistics.linearRegression(data); // m:slope, b:y-intercept
     this.setState({ slope: mb.m });
     this.setState({ yIntercept: mb.b });
+  }
+
+  public addPoint() {
+    const data = this.state.data;
+    data.push({ x: 0, y: 0 });
+    this.setState({ data });
+  }
+
+  public removePoint() {
+    const data = this.state.data;
+    data.pop();
+    this.setState({ data });
   }
 
   public render() {
@@ -92,9 +112,16 @@ class Main extends React.Component<IMainProps, IMainState> {
       );
     });
     return (
-      <form action="javascript:void(0)" onSubmit={e => this.handleSubmit(e)}>
+      <form action="javascript:void(0)">
         {points}
-        <button type="submit">計算</button>
+        <DefaultButton text="増やす" onClick={e => this.addPoint()} />
+        <DefaultButton text="減らす" onClick={e => this.removePoint()} />
+        <DefaultButton
+          primary={true}
+          text="計算"
+          iconProps={{ iconName: "Diagnostic" }}
+          onClick={e => this.handleSubmit()}
+        />
         <p>y={this.state.slope}x+{this.state.yIntercept}</p>
       </form>
     );
